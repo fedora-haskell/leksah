@@ -13,7 +13,7 @@ Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.10.0.4
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -21,6 +21,8 @@ License:        GPL+
 URL:            http://hackage.haskell.org/package/%{name}
 Source0:        http://hackage.haskell.org/packages/archive/%{name}/%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.desktop
+Source2:        %{name}_loadsession.desktop
+Source3:        %{name}.xml
 ExclusiveArch:  %{ghc_arches}
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
@@ -33,7 +35,6 @@ BuildRequires:  hscolour
 BuildRequires:  ghc-Cabal-prof, ghc-directory-prof, ghc-gtksourceview2-prof, ghc-old-time-prof, ghc-process-leksah-prof, ghc-regex-tdfa-prof, ghc-utf8-string-prof, ghc-time-prof, ghc-ltk-prof, ghc-binary-shared-prof, ghc-deepseq-prof, ghc-hslogger-prof, ghc-leksah-server-prof, ghc-network-prof, ghc-ghc-prof, ghc-strict-prof
 BuildRequires: desktop-file-utils
 # all requires list
-Requires: shared-mime-info
 Requires: hicolor-icon-theme
 Requires: leksah-server
 
@@ -94,7 +95,10 @@ This package contains the development files.
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/128x128/apps
 install --mode=0644 -D pics/leksah.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/128x128/apps/leksah.png
 desktop-file-install --add-category="Development"  --add-category="X-DevelopmentTools" --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
-
+desktop-file-install --add-category="Development"  --add-category="X-DevelopmentTools" --dir=%{buildroot}%{_datadir}/applications %{SOURCE2}
+# Copy mime file
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/mime/packages
+install --mode=0644 -D %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/mime/packages
 
 %post -n ghc-%{pkg_name}-devel
 %ghc_pkg_recache
@@ -115,6 +119,8 @@ desktop-file-install --add-category="Development"  --add-category="X-Development
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/pics/*
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/data/*
 %attr(644,root,root) %{_datadir}/applications/%{name}.desktop
+%attr(644,root,root) %{_datadir}/applications/%{name}_loadsession.desktop
+%attr(644,root,root) %{_datadir}/mime/packages/leksah.xml
 %attr(644,root,root) %{_datadir}/icons/hicolor/128x128/apps/leksah.png
 
 
@@ -128,7 +134,8 @@ desktop-file-install --add-category="Development"  --add-category="X-Development
 
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-update-desktop-database &> /dev/null || :
+/usr/bin/update-desktop-database &> /dev/null || :
+/usr/bin/update-mime-database %{_datadir}/mime &> /dev/null || :
 
 
 %postun
@@ -136,16 +143,26 @@ if [ $1 -eq 0 ] ; then
     touch --no-create %{_datadir}/icons/hicolor &>/dev/null
     gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 fi
-update-desktop-database &> /dev/null || :
-
+/usr/bin/update-desktop-database &> /dev/null || :
+/usr/bin/update-mime-database %{_datadir}/mime &> /dev/null || :
 
 %posttrans
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
-* Sun Jan 08 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.10.0.4-6
+* Sun Jan 08 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.10.0.4-7
 - Rebuild for haskell-platform
+
+* Fri Oct 21 2011 Marcela Mašláňová <mmaslano@redhat.com> - 0.10.0.4-6.2
+- rebuild with new gmp without compat lib
+
+* Wed Oct 12 2011 Peter Schiffer <pschiffe@redhat.com> - 0.10.0.4-6.1
+- rebuild with new gmp
+
+* Mon Oct 10 2011 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.10.0.4-6
+- Fix bug 744559.
+- Added leksah.xml to mime database.
 
 * Sun Sep 25 2011  Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.10.0.4-5
 - Upgrade to cabal2spec-0.24.1
