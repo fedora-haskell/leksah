@@ -38,8 +38,6 @@ BuildRequires: desktop-file-utils
 Requires: hicolor-icon-theme
 Requires: leksah-server
 
-# patches
-Patch1 : leksah_dep.patch
 
 %description
 %{common_description}
@@ -83,7 +81,6 @@ This package contains the development files.
 
 %prep
 %setup -q
-%patch1 -p1 -b .orig
 
 
 %build
