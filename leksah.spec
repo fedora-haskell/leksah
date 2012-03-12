@@ -32,12 +32,15 @@ BuildRequires:  hscolour
 # END: cabal2spec-0.24
 # BR any C devel dependency here
 # list ghc-*-prof dependencies:
-BuildRequires:  ghc-Cabal-prof, ghc-directory-prof, ghc-gtksourceview2-prof, ghc-old-time-prof, ghc-process-leksah-prof, ghc-regex-tdfa-prof, ghc-utf8-string-prof, ghc-time-prof, ghc-ltk-prof, ghc-binary-shared-prof, ghc-deepseq-prof, ghc-hslogger-prof, ghc-leksah-server-prof, ghc-network-prof, ghc-ghc-prof, ghc-strict-prof, ghc-gio-prof, ghc-text-prof, ghc-enumerator-prof, ghc-QuickCheck-prof
+BuildRequires:  ghc-Cabal-prof, ghc-directory-prof, ghc-gtksourceview2-prof, ghc-old-time-prof, ghc-process-leksah-prof, ghc-regex-tdfa-prof, ghc-utf8-string-prof, ghc-time-prof, ghc-ltk-prof, ghc-binary-shared-prof, ghc-deepseq-prof, ghc-hslogger-prof, ghc-leksah-server-prof, ghc-network-prof, ghc-ghc-prof, ghc-strict-prof
 BuildRequires: desktop-file-utils
 # all requires list
 Requires: hicolor-icon-theme
 Requires: leksah-server
 
+# patches
+Patch1: leksah_dep.patch
+Patch2: haddock.patch
 
 %description
 %{common_description}
@@ -81,6 +84,8 @@ This package contains the development files.
 
 %prep
 %setup -q
+%patch1 -p1 -b .orig
+%patch2 -p1 -b .orig
 
 
 %build
@@ -111,10 +116,12 @@ install --mode=0644 -D %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/mime/packages
 %dir %{_datadir}/%{name}-%{version}
 %dir %{_datadir}/%{name}-%{version}/data
 %dir %{_datadir}/%{name}-%{version}/pics
+%dir %{_datadir}/%{name}-%{version}/language-specs
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/LICENSE
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/Readme
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/pics/*
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/data/*
+%attr(644,root,root) %{_datadir}/%{name}-%{version}/language-specs/*
 %attr(644,root,root) %{_datadir}/applications/%{name}.desktop
 %attr(644,root,root) %{_datadir}/applications/%{name}_loadsession.desktop
 %attr(644,root,root) %{_datadir}/mime/packages/leksah.xml
@@ -150,6 +157,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Mon Mar 12 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.0.3-1
 - Package update to 0.12.0.3
+- Added patches for reducing version requirement of QuickCheck and fixing issue when
+- running haddock
 
 * Sun Jan 08 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.10.0.4-7
 - Rebuild for haskell-platform
