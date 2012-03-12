@@ -32,7 +32,7 @@ BuildRequires:  hscolour
 # END: cabal2spec-0.24
 # BR any C devel dependency here
 # list ghc-*-prof dependencies:
-BuildRequires:  ghc-Cabal-prof, ghc-directory-prof, ghc-gtksourceview2-prof, ghc-old-time-prof, ghc-process-leksah-prof, ghc-regex-tdfa-prof, ghc-utf8-string-prof, ghc-time-prof, ghc-ltk-prof, ghc-binary-shared-prof, ghc-deepseq-prof, ghc-hslogger-prof, ghc-leksah-server-prof, ghc-network-prof, ghc-ghc-prof, ghc-strict-prof, ghc-enumerator-prof, ghc-QuickCheck-prof
+BuildRequires:  ghc-Cabal-prof, ghc-directory-prof, ghc-gtksourceview2-prof, ghc-old-time-prof, ghc-process-leksah-prof, ghc-regex-tdfa-prof, ghc-utf8-string-prof, ghc-time-prof, ghc-ltk-prof, ghc-binary-shared-prof, ghc-deepseq-prof, ghc-hslogger-prof, ghc-leksah-server-prof, ghc-network-prof, ghc-ghc-prof, ghc-strict-prof, ghc-gio-prof, ghc-text-prof, ghc-enumerator-prof, ghc-QuickCheck-prof
 BuildRequires: desktop-file-utils
 # all requires list
 Requires: hicolor-icon-theme
