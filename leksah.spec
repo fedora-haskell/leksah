@@ -13,7 +13,7 @@ Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.12.0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -155,6 +155,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Mar 18 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.0.3-2
+- Rebuild for leksah-server update
+
 * Mon Mar 12 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.0.3-1
 - Package update to 0.12.0.3
 - Added patches for reducing version requirement of QuickCheck and fixing issue when
