@@ -10,8 +10,8 @@
 Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
-Version:        0.12.0.3
-Release:        3%{?dist}
+Version:        0.12.1.0
+Release:        1%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -117,6 +117,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Jun 10 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.0-1
+- update to 0.12.1.0
+
 * Tue Mar 20 2012 Jens Petersen <petersen@redhat.com> - 0.12.0.3-3
 - update to cabal2spec-0.25
 - drop unnecessary depends on process-leksah
