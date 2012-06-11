@@ -33,7 +33,6 @@ Requires: hicolor-icon-theme
 Requires: leksah-server
 
 # patches
-Patch1: leksah_dep.patch
 Patch2: haddock.patch
 
 %description
@@ -42,7 +41,6 @@ Patch2: haddock.patch
 
 %prep
 %setup -q
-%patch1 -p1 -b .orig
 %patch2 -p1 -b .orig
 
 
@@ -119,6 +117,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Sun Jun 10 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.0-1
 - update to 0.12.1.0
+- deps patch is no longer needed
 
 * Tue Mar 20 2012 Jens Petersen <petersen@redhat.com> - 0.12.0.3-3
 - update to cabal2spec-0.25
