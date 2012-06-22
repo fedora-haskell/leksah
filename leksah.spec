@@ -10,7 +10,7 @@
 Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
-Version:        0.12.1.0
+Version:        0.12.1.2
 Release:        1%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
@@ -33,7 +33,6 @@ Requires: hicolor-icon-theme
 Requires: leksah-server
 
 # patches
-Patch2: haddock.patch
 
 %description
 %{common_description}
@@ -41,7 +40,6 @@ Patch2: haddock.patch
 
 %prep
 %setup -q
-%patch2 -p1 -b .orig
 
 
 %build
@@ -115,6 +113,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Jun 22 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.2-1
+- update to 0.12.1.2
+- haddock.patch is not needed
+
 * Sun Jun 10 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.0-1
 - update to 0.12.1.0
 - deps patch is no longer needed
