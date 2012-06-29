@@ -10,7 +10,7 @@
 Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
-Version:        0.12.1.2
+Version:        0.12.1.3
 Release:        1%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
@@ -96,12 +96,19 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %attr(755,root,root) %{_bindir}/%{name}
 %dir %{_datadir}/%{name}-%{version}
 %dir %{_datadir}/%{name}-%{version}/data
+%dir %{_datadir}/%{name}-%{version}/data/leksah-welcome
+%dir %{_datadir}/%{name}-%{version}/data/leksah-welcome/src
 %dir %{_datadir}/%{name}-%{version}/pics
 %dir %{_datadir}/%{name}-%{version}/language-specs
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/LICENSE
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/Readme
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/pics/*
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/*
+%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/*.lksh*
+%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/leksah.menu
+%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/LICENSE
+%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/welcome.txt
+%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/leksah-welcome/*.*
+%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/leksah-welcome/src/Main.hs
 %attr(644,root,root) %{_datadir}/%{name}-%{version}/language-specs/*
 %attr(644,root,root) %{_datadir}/applications/%{name}.desktop
 %attr(644,root,root) %{_datadir}/applications/%{name}_loadsession.desktop
@@ -113,9 +120,13 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Jun 28 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-1
+- update to 0.12.1.3
+
 * Fri Jun 22 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.2-1
 - update to 0.12.1.2
 - haddock.patch is not needed
+- update files section and list the folders/files under data folder properly. wildcard * makes everthing 644, including folders
 
 * Sun Jun 10 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.0-1
 - update to 0.12.1.0
