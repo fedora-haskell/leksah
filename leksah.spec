@@ -33,6 +33,7 @@ Requires: hicolor-icon-theme
 Requires: leksah-server
 
 # patches
+Patch1: haddock.patch
 
 %description
 %{common_description}
@@ -40,6 +41,7 @@ Requires: leksah-server
 
 %prep
 %setup -q
+%patch1 -p1 -b .orig
 
 
 %build
