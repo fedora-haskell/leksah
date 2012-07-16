@@ -11,7 +11,7 @@ Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -26,11 +26,27 @@ ExclusiveArch:  %{ghc_arches}
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros %{!?without_hscolour:hscolour}
 # END cabal2spec
-BuildRequires:  ghc-Cabal-prof, ghc-directory-prof, ghc-gtksourceview2-prof, ghc-old-time-prof, ghc-regex-tdfa-prof, ghc-utf8-string-prof, ghc-time-prof, ghc-ltk-prof, ghc-binary-shared-prof, ghc-deepseq-prof, ghc-hslogger-prof, ghc-leksah-server-prof, ghc-network-prof, ghc-ghc-prof, ghc-strict-prof, ghc-enumerator-prof, ghc-QuickCheck-prof
-BuildRequires: desktop-file-utils
+BuildRequires:  ghc-Cabal-devel
+BuildRequires:  ghc-directory-devel
+BuildRequires:  ghc-gtksourceview2-devel
+BuildRequires:  ghc-old-time-devel
+BuildRequires:  ghc-regex-tdfa-devel
+BuildRequires:  ghc-utf8-string-devel
+BuildRequires:  ghc-time-devel
+BuildRequires:  ghc-ltk-devel
+BuildRequires:  ghc-binary-shared-devel
+BuildRequires:  ghc-deepseq-devel
+BuildRequires:  ghc-hslogger-devel
+BuildRequires:  ghc-leksah-server-devel
+BuildRequires:  ghc-network-devel
+BuildRequires:  ghc-ghc-devel
+BuildRequires:  ghc-strict-devel
+BuildRequires:  ghc-enumerator-devel
+BuildRequires:  ghc-QuickCheck-devel
+BuildRequires:  desktop-file-utils
 # all requires list
-Requires: hicolor-icon-theme
-Requires: leksah-server
+Requires:       hicolor-icon-theme
+Requires:       leksah-server
 
 # patches
 Patch1: haddock.patch
@@ -122,6 +138,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Jul 16 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.3-2
+- change prof BRs to devel
+
 * Fri Jun 29 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-1
 - update to 0.12.1.3
 
