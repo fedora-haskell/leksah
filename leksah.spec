@@ -11,7 +11,7 @@ Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -138,6 +138,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Aug 11 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-4
+- Rebuild for libffi.
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12.1.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
