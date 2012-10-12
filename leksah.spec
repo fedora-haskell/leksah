@@ -11,7 +11,7 @@ Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -50,6 +50,7 @@ Requires:       leksah-server
 
 # patches
 Patch1: haddock.patch
+Patch2: deps.patch
 
 %description
 %{common_description}
@@ -138,6 +139,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Oct 12 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-6
+- Bring back deps.patch to fix bug #863499 . Without this patch, leksah binary depends \
+on its shared library. Loader is not able to resolve this at runtime because \
+the rpath information for leksah shared library is incorrect.
+
 * Tue Oct 02 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-5
 - Rebuild for ghc-7.4.1
 
