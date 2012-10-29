@@ -11,7 +11,7 @@ Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Haskell IDE
 Group:          Development/Tools
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -59,6 +59,9 @@ Patch2: deps.patch
 %prep
 %setup -q
 %patch1 -p1 -b .orig
+%patch2 -p1 -b .orig
+
+cabal-tweak-dep-ver QuickCheck "<2.5" "<2.6"
 
 
 %build
@@ -139,6 +142,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Oct 29 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.3-7
+- allow building with QuickCheck 2.5
+
 * Fri Oct 12 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-6
 - Bring back deps.patch to fix bug #863499 . Without this patch, leksah binary depends \
 on its shared library. Loader is not able to resolve this at runtime because \
@@ -148,7 +154,7 @@ the rpath information for leksah shared library is incorrect.
 - Rebuild for ghc-7.4.1
 
 * Sat Aug 11 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-4
-- Rebuild for libffi.
+- Rebuild for libffi
 
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12.1.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
