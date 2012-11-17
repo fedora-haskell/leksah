@@ -1,56 +1,66 @@
-# cabal2spec-0.25.4
 # https://fedoraproject.org/wiki/Packaging:Haskell
 # https://fedoraproject.org/wiki/PackagingDrafts/Haskell
 
 %global pkg_name leksah
 
-%global common_summary An IDE for Haskell
+%global common_summary Haskell IDE written in Haskell
 
 %global common_description Leksah is an Integrated Development Environment for \
 Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Haskell IDE
-Group:          Development/Tools
+
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
 License:        GPL+
-# BEGIN cabal2spec
 URL:            http://hackage.haskell.org/package/%{name}
 Source0:        http://hackage.haskell.org/packages/archive/%{name}/%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
-ExclusiveArch:  %{ghc_arches}
+Patch1:         haddock.patch
+Patch2:         deps.patch
+
 BuildRequires:  ghc-Cabal-devel
-BuildRequires:  ghc-rpm-macros %{!?without_hscolour:hscolour}
-# END cabal2spec
-BuildRequires:  ghc-Cabal-devel
-BuildRequires:  ghc-directory-devel
-BuildRequires:  ghc-gtksourceview2-devel
-BuildRequires:  ghc-old-time-devel
-BuildRequires:  ghc-regex-tdfa-devel
-BuildRequires:  ghc-utf8-string-devel
-BuildRequires:  ghc-time-devel
-BuildRequires:  ghc-ltk-devel
+BuildRequires:  ghc-rpm-macros
+# Begin cabal-rpm deps:
+BuildRequires:  ghc-QuickCheck-devel
+BuildRequires:  ghc-array-devel
+BuildRequires:  ghc-binary-devel
 BuildRequires:  ghc-binary-shared-devel
+BuildRequires:  ghc-bytestring-devel
+BuildRequires:  ghc-containers-devel
 BuildRequires:  ghc-deepseq-devel
+BuildRequires:  ghc-directory-devel
+BuildRequires:  ghc-enumerator-devel
+BuildRequires:  ghc-filepath-devel
+BuildRequires:  ghc-ghc-devel
+BuildRequires:  ghc-gio-devel
+BuildRequires:  ghc-glib-devel
+BuildRequires:  ghc-gtk-devel
+BuildRequires:  ghc-gtksourceview2-devel
 BuildRequires:  ghc-hslogger-devel
 BuildRequires:  ghc-leksah-server-devel
+BuildRequires:  ghc-ltk-devel
+BuildRequires:  ghc-mtl-devel
 BuildRequires:  ghc-network-devel
-BuildRequires:  ghc-ghc-devel
+BuildRequires:  ghc-old-time-devel
+BuildRequires:  ghc-parsec-devel
+BuildRequires:  ghc-pretty-devel
+BuildRequires:  ghc-regex-base-devel
+BuildRequires:  ghc-regex-tdfa-devel
 BuildRequires:  ghc-strict-devel
-BuildRequires:  ghc-enumerator-devel
-BuildRequires:  ghc-QuickCheck-devel
+BuildRequires:  ghc-text-devel
+BuildRequires:  ghc-time-devel
+BuildRequires:  ghc-transformers-devel
+BuildRequires:  ghc-unix-devel
+BuildRequires:  ghc-utf8-string-devel
+# End cabal-rpm deps
 BuildRequires:  desktop-file-utils
-# all requires list
 Requires:       hicolor-icon-theme
 Requires:       leksah-server
-
-# patches
-Patch1: haddock.patch
-Patch2: deps.patch
 
 %description
 %{common_description}
@@ -79,13 +89,11 @@ mkdir -p $RPM_BUILD_ROOT/%{_datadir}/mime/packages
 install --mode=0644 -D %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/mime/packages
 
 
-# library subpackage
 %ghc_package
 
 %ghc_description
 
 
-# devel subpackage
 %ghc_devel_package
 
 %ghc_devel_description
@@ -114,7 +122,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %files
-%doc LICENSE
+%doc LICENSE Readme
 %attr(755,root,root) %{_bindir}/%{name}
 %dir %{_datadir}/%{name}-%{version}
 %dir %{_datadir}/%{name}-%{version}/data
@@ -142,6 +150,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Nov 17 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.3-8
+- update with cabal-rpm
+
 * Mon Oct 29 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.3-7
 - allow building with QuickCheck 2.5
 
