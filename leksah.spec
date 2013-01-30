@@ -10,7 +10,7 @@ Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -21,7 +21,6 @@ Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
 Patch1:         haddock.patch
-Patch2:         deps.patch
 
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
@@ -69,7 +68,6 @@ Requires:       leksah-server
 %prep
 %setup -q
 %patch1 -p1 -b .orig
-%patch2 -p1 -b .orig
 
 cabal-tweak-dep-ver QuickCheck "<2.5" "<2.6"
 
@@ -87,6 +85,8 @@ desktop-file-install --add-category="Development"  --add-category="X-Development
 # Copy mime file
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/mime/packages
 install --mode=0644 -D %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/mime/packages
+
+%ghc_fix_dynamic_rpath %{name}
 
 
 %ghc_package
@@ -150,6 +150,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Jan 30 2013 Jens Petersen <petersen@redhat.com> - 0.12.1.3-9
+- drop deps.patch and link leksah against itself
+- use new ghc_fix_dynamic_rpath macro
+
 * Sat Nov 17 2012 Jens Petersen <petersen@redhat.com> - 0.12.1.3-8
 - update with cabal-rpm
 
