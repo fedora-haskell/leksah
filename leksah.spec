@@ -1,16 +1,10 @@
 # https://fedoraproject.org/wiki/Packaging:Haskell
-# https://fedoraproject.org/wiki/PackagingDrafts/Haskell
 
 %global pkg_name leksah
 
-%global common_summary Haskell IDE written in Haskell
-
-%global common_description Leksah is an Integrated Development Environment for \
-Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
-
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -62,7 +56,26 @@ Requires:       hicolor-icon-theme
 Requires:       leksah-server
 
 %description
-%{common_description}
+Leksah is an Integrated Development Environment for
+Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
+
+
+%package -n ghc-%{name}
+Summary:        Haskell %{name} library
+
+%description -n ghc-%{name}
+This package provides the Haskell %{name} shared library.
+
+
+%package -n ghc-%{name}-devel
+Summary:        Haskell %{name} library development files
+Requires:       ghc-compiler = %{ghc_version}
+Requires(post): ghc-compiler = %{ghc_version}
+Requires(postun): ghc-compiler = %{ghc_version}
+Requires:       ghc-%{name} = %{version}-%{release}
+
+%description -n ghc-%{name}-devel
+This package provides the Haskell %{name} library development files.
 
 
 %prep
@@ -89,16 +102,6 @@ install --mode=0644 -D %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/mime/packages
 %ghc_fix_dynamic_rpath %{name}
 
 
-%ghc_package
-
-%ghc_description
-
-
-%ghc_devel_package
-
-%ghc_devel_description
-
-
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 /usr/bin/update-desktop-database &> /dev/null || :
@@ -118,7 +121,12 @@ fi
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
-%ghc_devel_post_postun
+%post -n ghc-%{name}-devel
+%ghc_pkg_recache
+
+
+%postun -n ghc-%{name}-devel
+%ghc_pkg_recache
 
 
 %files
@@ -146,10 +154,17 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %attr(644,root,root) %{_datadir}/icons/hicolor/128x128/apps/leksah.png
 
 
-%ghc_files LICENSE
+%files -n ghc-%{name} -f ghc-%{name}.files
+%doc LICENSE
+
+
+%files -n ghc-%{name}-devel -f ghc-%{name}-devel.files
 
 
 %changelog
+* Mon Jun 10 2013 Jens Petersen <petersen@redhat.com> - 0.12.1.3-11
+- update to new simplified Haskell Packaging Guidelines
+
 * Sat Feb 23 2013 Kevin Fenzi <kevin@scrye.com> - 0.12.1.3-10
 - Rebuild for broken deps in rawhide
 
@@ -242,7 +257,7 @@ the rpath information for leksah shared library is incorrect.
 - upgrade to 0.10.0.1, update to cabal2spec-0.22.5.
 
 * Sun Jan 30 2011 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.8.0.8-1
-- updated dependencies. 
+- updated dependencies.
 - generate desktop file. scale icon file to 64x64. run gtk-update-icon-cache after transaction
 
 * Sun Jan 30 2011 Fedora Haskell SIG <haskell-devel@lists.fedoraproject.org> - 0.8.0.8-0
