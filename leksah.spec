@@ -15,6 +15,7 @@ Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
 Patch1:         haddock.patch
+Patch2:         leksah-0.12.1-ghc-7.6.patch
 
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
@@ -81,6 +82,7 @@ This package provides the Haskell %{name} library development files.
 %prep
 %setup -q
 %patch1 -p1 -b .orig
+%patch2 -p1 -b .orig
 
 cabal-tweak-dep-ver Cabal "<1.15" "<1.17"
 cabal-tweak-dep-ver QuickCheck "<2.5" "<2.7"
@@ -171,6 +173,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Mon Jun 10 2013 Jens Petersen <petersen@redhat.com> - 0.12.1.3-11
 - update to new simplified Haskell Packaging Guidelines
+- patch from git for ghc-7.6
 
 * Sat Feb 23 2013 Kevin Fenzi <kevin@scrye.com> - 0.12.1.3-10
 - Rebuild for broken deps in rawhide

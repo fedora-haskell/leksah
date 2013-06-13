@@ -1,0 +1,114 @@
+	Modified   src/IDE/BufferMode.hs
+diff --git a/src/IDE/BufferMode.hs b/src/IDE/BufferMode.hs
+index a131a09..e6e3118 100644
+--- a/src/IDE/BufferMode.hs
++++ b/src/IDE/BufferMode.hs
+@@ -1,4 +1,4 @@
+-{-# LANGUAGE FlexibleInstances, DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
++{-# LANGUAGE CPP, FlexibleInstances, DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
+ -----------------------------------------------------------------------------
+ --
+ -- Module      :  IDE.BufferMode
+@@ -36,6 +36,9 @@ import IDE.Utils.FileUtils
+ import Graphics.UI.Gtk
+        (Notebook, castToWidget, notebookPageNum, ScrolledWindow)
+ import Control.Monad.IO.Class (MonadIO(..))
++#if MIN_VERSION_directory(1,2,0)
++import Data.Time (UTCTime)
++#endif
+ 
+ 
+ -- * Buffer Basics
+@@ -49,7 +52,11 @@ data IDEBuffer      =   IDEBuffer {
+ ,   addedIndex      ::  Int
+ ,   sourceView      ::  EditorView
+ ,   scrolledWindow  ::  ScrolledWindow
++#if MIN_VERSION_directory(1,2,0)
++,   modTime         ::  IORef (Maybe (UTCTime))
++#else
+ ,   modTime         ::  IORef (Maybe (ClockTime))
++#endif
+ ,   mode            ::  Mode
+ } deriving (Typeable)
+ 
+	Modified   src/IDE/Core/Types.hs
+diff --git a/src/IDE/Core/Types.hs b/src/IDE/Core/Types.hs
+index 15e7e5a..1e7cb4f 100644
+--- a/src/IDE/Core/Types.hs
++++ b/src/IDE/Core/Types.hs
+@@ -119,6 +119,9 @@ import Text.PrettyPrint (render)
+ import Control.Monad.Trans.Class (lift)
+ import Control.Monad.IO.Class (liftIO)
+ import Control.Monad.Trans.Reader (ReaderT(..))
++#if MIN_VERSION_directory(1,2,0)
++import Data.Time (UTCTime(..))
++#endif
+ 
+ -- ---------------------------------------------------------------------
+ -- IDE State
+@@ -555,5 +558,8 @@ data StatusbarCompartment =
+     |   CompartmentCollect Bool
+ 
+ type PackageDescrCache = Map PackageIdentifier ModuleDescrCache
++#if MIN_VERSION_directory(1,2,0)
++type ModuleDescrCache = Map ModuleName (UTCTime, Maybe FilePath, ModuleDescr)
++#else
+ type ModuleDescrCache = Map ModuleName (ClockTime, Maybe FilePath, ModuleDescr)
+-
++#endif
+	Modified   src/IDE/Pane/SourceBuffer.hs
+diff --git a/src/IDE/Pane/SourceBuffer.hs b/src/IDE/Pane/SourceBuffer.hs
+index cc8702f..7621dd8 100644
+--- a/src/IDE/Pane/SourceBuffer.hs
++++ b/src/IDE/Pane/SourceBuffer.hs
+@@ -134,6 +134,7 @@ import IDE.BufferMode
+ import Control.Monad.Trans.Reader (ask)
+ import Control.Monad.IO.Class (MonadIO(..))
+ import Control.Monad (foldM, forM, filterM, unless, when)
++import Control.Exception as E (catch, SomeException)
+ 
+ allBuffers :: IDEM [IDEBuffer]
+ allBuffers = getPanes
+@@ -808,8 +809,8 @@ fileSaveBuffer query nb ebuf ideBuf i = do
+             let text' = if removeTBlanks
+                             then unlines $ map removeTrailingBlanks $lines text
+                             else text
+-            succ <- liftIO $ catch (do UTF8.writeFile fn text'; return True)
+-                (\e -> do
++            succ <- liftIO $ E.catch (do UTF8.writeFile fn text'; return True)
++                (\(e :: SomeException) -> do
+                     sysMessage Normal (show e)
+                     return False)
+             setModified buf (not succ)
+	Modified   src/IDE/Utils/GUIUtils.hs
+diff --git a/src/IDE/Utils/GUIUtils.hs b/src/IDE/Utils/GUIUtils.hs
+index 49a98d3..0bdf2a1 100644
+--- a/src/IDE/Utils/GUIUtils.hs
++++ b/src/IDE/Utils/GUIUtils.hs
+@@ -1,4 +1,4 @@
+-{-# LANGUAGE CPP #-}
++{-# LANGUAGE CPP, ScopedTypeVariables #-}
+ -----------------------------------------------------------------------------
+ --
+ -- Module      :  IDE.Utils.GUIUtils
+@@ -56,6 +56,7 @@ import Graphics.UI.Gtk.Gdk.EventM (Modifier(..))
+ import Graphics.UI.Gtk.Gdk.Enums (Modifier(..))
+ #endif
+ import Control.Monad.IO.Class (liftIO)
++import Control.Exception as E
+ 
+ chooseDir :: Window -> String -> Maybe FilePath -> IO (Maybe FilePath)
+ chooseDir window prompt mbFolder = do
+@@ -134,10 +135,10 @@ chooseSaveFile window prompt mbFolder = do
+ openBrowser :: String -> IDEAction
+ openBrowser url = do
+     prefs' <- readIDE prefs
+-    liftIO (catch (do
++    liftIO (E.catch (do
+                 runProcess (browser prefs') [url] Nothing Nothing Nothing Nothing Nothing
+                 return ())
+-            (\ _ -> sysMessage Normal ("Can't find browser executable " ++ browser prefs')))
++            (\ (_ :: SomeException) -> sysMessage Normal ("Can't find browser executable " ++ browser prefs')))
+     return ()
+ 
+ -- get widget elements (menu & toolbar)
