@@ -82,7 +82,14 @@ This package provides the Haskell %{name} library development files.
 %setup -q
 %patch1 -p1 -b .orig
 
-cabal-tweak-dep-ver QuickCheck "<2.5" "<2.6"
+cabal-tweak-dep-ver Cabal "<1.15" "<1.17"
+cabal-tweak-dep-ver QuickCheck "<2.5" "<2.7"
+cabal-tweak-dep-ver base "<4.6" "<4.7"
+cabal-tweak-dep-ver bytestring "<0.10" "<0.11"
+cabal-tweak-dep-ver containers "<0.5" "<0.6"
+cabal-tweak-dep-ver ghc "<7.5" "<7.7"
+cabal-tweak-dep-ver hslogger "<1.2" "<1.3"
+cabal-tweak-dep-ver unix "<2.6" "<2.7"
 
 
 %build
