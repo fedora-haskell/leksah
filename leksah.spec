@@ -4,7 +4,7 @@
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -53,6 +53,7 @@ BuildRequires:  ghc-unix-devel
 BuildRequires:  ghc-utf8-string-devel
 # End cabal-rpm deps
 BuildRequires:  desktop-file-utils
+BuildRequires:  chrpath
 Requires:       hicolor-icon-theme
 Requires:       leksah-server
 
@@ -171,6 +172,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Jul  4 2013 Jens Petersen <petersen@redhat.com> - 0.12.1.3-12
+- ghc_fix_dynamic_rpath needs BR chrpath (#981010)
+
 * Mon Jun 10 2013 Jens Petersen <petersen@redhat.com> - 0.12.1.3-11
 - update to new simplified Haskell Packaging Guidelines
 - patch from git for ghc-7.6
