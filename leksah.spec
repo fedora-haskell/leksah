@@ -4,7 +4,7 @@
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -172,6 +172,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12.1.3-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Thu Jul  4 2013 Jens Petersen <petersen@redhat.com> - 0.12.1.3-12
 - ghc_fix_dynamic_rpath needs BR chrpath (#981010)
 
