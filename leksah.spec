@@ -101,13 +101,13 @@ cabal-tweak-dep-ver unix "<2.6" "<2.7"
 
 %install
 %ghc_lib_install
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/128x128/apps
-install --mode=0644 -D pics/leksah.png $RPM_BUILD_ROOT/%{_datadir}/icons/hicolor/128x128/apps/leksah.png
+mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/128x128/apps
+install --mode=0644 -D pics/leksah.png %{buildroot}/%{_datadir}/icons/hicolor/128x128/apps/leksah.png
 desktop-file-install --add-category="Development"  --add-category="X-DevelopmentTools" --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 desktop-file-install --add-category="Development"  --add-category="X-DevelopmentTools" --dir=%{buildroot}%{_datadir}/applications %{SOURCE2}
 # Copy mime file
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/mime/packages
-install --mode=0644 -D %{SOURCE3} $RPM_BUILD_ROOT/%{_datadir}/mime/packages
+mkdir -p %{buildroot}/%{_datadir}/mime/packages
+install --mode=0644 -D %{SOURCE3} %{buildroot}/%{_datadir}/mime/packages
 
 %ghc_fix_dynamic_rpath %{name}
 
