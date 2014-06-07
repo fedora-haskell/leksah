@@ -4,7 +4,7 @@
 
 Name:           %{pkg_name}
 Version:        0.12.1.3
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -172,6 +172,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12.1.3-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Sat Dec 21 2013 Jens Petersen <petersen@redhat.com> - 0.12.1.3-14
 - rebuild
 
