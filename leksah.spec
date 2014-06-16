@@ -2,6 +2,11 @@
 
 %global pkg_name leksah
 
+%bcond_without tests
+
+# no useful debuginfo for Haskell packages without C sources
+%global debug_package %{nil}
+
 Name:           %{pkg_name}
 Version:        0.12.1.3
 Release:        15%{?dist}
@@ -9,8 +14,8 @@ Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
 License:        GPL+
-URL:            http://hackage.haskell.org/package/%{name}
-Source0:        http://hackage.haskell.org/packages/archive/%{name}/%{version}/%{name}-%{version}.tar.gz
+Url:            http://hackage.haskell.org/package/%{name}
+Source0:        http://hackage.haskell.org/package/%{name}-%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
@@ -20,6 +25,7 @@ Patch2:         leksah-0.12.1-ghc-7.6.patch
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
 # Begin cabal-rpm deps:
+BuildRequires:  chrpath
 BuildRequires:  ghc-QuickCheck-devel
 BuildRequires:  ghc-array-devel
 BuildRequires:  ghc-binary-devel
@@ -53,7 +59,6 @@ BuildRequires:  ghc-unix-devel
 BuildRequires:  ghc-utf8-string-devel
 # End cabal-rpm deps
 BuildRequires:  desktop-file-utils
-BuildRequires:  chrpath
 Requires:       hicolor-icon-theme
 Requires:       leksah-server
 
@@ -71,10 +76,11 @@ This package provides the Haskell %{name} shared library.
 
 %package -n ghc-%{name}-devel
 Summary:        Haskell %{name} library development files
+Provides:       ghc-%{name}-static = %{version}-%{release}
 Requires:       ghc-compiler = %{ghc_version}
 Requires(post): ghc-compiler = %{ghc_version}
 Requires(postun): ghc-compiler = %{ghc_version}
-Requires:       ghc-%{name} = %{version}-%{release}
+Requires:       ghc-%{name}%{?_isa} = %{version}-%{release}
 
 %description -n ghc-%{name}-devel
 This package provides the Haskell %{name} library development files.
@@ -112,6 +118,12 @@ install --mode=0644 -D %{SOURCE3} %{buildroot}/%{_datadir}/mime/packages
 %ghc_fix_dynamic_rpath %{name}
 
 
+%check
+%if %{with tests}
+%cabal test
+%endif
+
+
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 /usr/bin/update-desktop-database &> /dev/null || :
@@ -140,7 +152,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %files
-%doc LICENSE Readme
+%doc LICENSE
+%doc Readme
 %attr(755,root,root) %{_bindir}/%{name}
 %dir %{_datadir}/%{name}-%{version}
 %dir %{_datadir}/%{name}-%{version}/data
@@ -172,6 +185,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Mon Jun 16 2014 Jens Petersen <petersen@redhat.com> - 0.12.1.3-15
+- update to cblrpm-0.8.11 and enable tests
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12.1.3-15
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
@@ -202,9 +218,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 - allow building with QuickCheck 2.5
 
 * Fri Oct 12 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-6
-- Bring back deps.patch to fix bug #863499 . Without this patch, leksah binary depends \
-on its shared library. Loader is not able to resolve this at runtime because \
-the rpath information for leksah shared library is incorrect.
+- Bring back deps.patch to fix bug #863499. Without this patch, leksah binary
+  depends on its shared library. Loader is not able to resolve this at runtime
+  because the rpath information for leksah shared library is incorrect.
 
 * Tue Oct 02 2012 Lakshmi Narasimhan T V <lakshminaras2002@gmail.com> - 0.12.1.3-5
 - Rebuild for ghc-7.4.1
