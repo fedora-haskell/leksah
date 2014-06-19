@@ -2,7 +2,9 @@
 
 %global pkg_name leksah
 
+%ifnarch armv7hl
 %bcond_without tests
+%endif
 
 # no useful debuginfo for Haskell packages without C sources
 %global debug_package %{nil}
@@ -102,10 +104,6 @@ cabal-tweak-dep-ver unix "<2.6" "<2.7"
 
 
 %build
-# avoid crash while linking leksah
-%ifarch armv7hl
-cabal_configure_extra_options=--ghc-option="-O1"
-%endif
 %ghc_lib_build
 
 
@@ -191,7 +189,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Mon Jun 16 2014 Jens Petersen <petersen@redhat.com> - 0.12.1.3-15
 - update to cblrpm-0.8.11 and enable tests
-- build with -O1 on ARM to avoid linking failure
+- disable testsuite on ARM since it doesn't link
 
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12.1.3-15
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
