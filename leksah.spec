@@ -2,16 +2,14 @@
 
 %global pkg_name leksah
 
-%ifnarch armv7hl
-%bcond_without tests
-%endif
+%bcond_with tests
 
 # no useful debuginfo for Haskell packages without C sources
 %global debug_package %{nil}
 
 Name:           %{pkg_name}
-Version:        0.12.1.3
-Release:        16%{?dist}
+Version:        0.13.4.3
+Release:        1%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -21,8 +19,7 @@ Source0:        http://hackage.haskell.org/package/%{name}-%{version}/%{name}-%{
 Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
-Patch1:         haddock.patch
-Patch2:         leksah-0.12.1-ghc-7.6.patch
+Patch1:         leksah-0.13.4.3-gtk.patch
 
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
@@ -33,16 +30,19 @@ BuildRequires:  ghc-array-devel
 BuildRequires:  ghc-binary-devel
 BuildRequires:  ghc-binary-shared-devel
 BuildRequires:  ghc-bytestring-devel
+BuildRequires:  ghc-conduit-devel
 BuildRequires:  ghc-containers-devel
 BuildRequires:  ghc-deepseq-devel
 BuildRequires:  ghc-directory-devel
-BuildRequires:  ghc-enumerator-devel
+BuildRequires:  ghc-executable-path-devel
 BuildRequires:  ghc-filepath-devel
 BuildRequires:  ghc-ghc-devel
 BuildRequires:  ghc-gio-devel
 BuildRequires:  ghc-glib-devel
 BuildRequires:  ghc-gtk-devel
 BuildRequires:  ghc-gtksourceview2-devel
+BuildRequires:  ghc-haskell-src-exts-devel
+BuildRequires:  ghc-hlint-devel
 BuildRequires:  ghc-hslogger-devel
 BuildRequires:  ghc-leksah-server-devel
 BuildRequires:  ghc-ltk-devel
@@ -53,12 +53,20 @@ BuildRequires:  ghc-parsec-devel
 BuildRequires:  ghc-pretty-devel
 BuildRequires:  ghc-regex-base-devel
 BuildRequires:  ghc-regex-tdfa-devel
+BuildRequires:  ghc-shakespeare-devel
 BuildRequires:  ghc-strict-devel
 BuildRequires:  ghc-text-devel
 BuildRequires:  ghc-time-devel
 BuildRequires:  ghc-transformers-devel
 BuildRequires:  ghc-unix-devel
 BuildRequires:  ghc-utf8-string-devel
+BuildRequires:  ghc-vado-devel
+BuildRequires:  ghc-vcsgui-devel
+BuildRequires:  ghc-vcswrapper-devel
+%if %{with tests}
+BuildRequires:  ghc-monad-loops-devel
+BuildRequires:  ghc-webkit-devel
+%endif
 # End cabal-rpm deps
 BuildRequires:  desktop-file-utils
 Requires:       hicolor-icon-theme
@@ -66,7 +74,7 @@ Requires:       leksah-server
 
 %description
 Leksah is an Integrated Development Environment for
-Haskell written in Haskell. Leksah uses GTK+ as GUI Toolkit.
+Haskell written in Haskell and using the GTK+ GUI Toolkit.
 
 
 %package -n ghc-%{name}
@@ -91,16 +99,9 @@ This package provides the Haskell %{name} library development files.
 %prep
 %setup -q
 %patch1 -p1 -b .orig
-%patch2 -p1 -b .orig
-
-cabal-tweak-dep-ver Cabal "<1.15" "<1.17"
-cabal-tweak-dep-ver QuickCheck "<2.5" "<2.7"
-cabal-tweak-dep-ver base "<4.6" "<4.7"
-cabal-tweak-dep-ver bytestring "<0.10" "<0.11"
-cabal-tweak-dep-ver containers "<0.5" "<0.6"
-cabal-tweak-dep-ver ghc "<7.5" "<7.7"
-cabal-tweak-dep-ver hslogger "<1.2" "<1.3"
-cabal-tweak-dep-ver unix "<2.6" "<2.7"
+cabal-tweak-flag dyre False
+cabal-tweak-flag gtk3 False
+cabal-tweak-flag webkit False
 
 
 %build
@@ -187,6 +188,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Sep 03 2014 Jens Petersen <petersen@redhat.com> - 0.13.4.3-1
+- update to 0.13.4.3
+- needs new deps: vado, vcsgui, vcswrapper
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12.1.3-16
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
