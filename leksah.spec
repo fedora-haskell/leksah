@@ -8,7 +8,7 @@
 %global debug_package %{nil}
 
 Name:           %{pkg_name}
-Version:        0.13.4.3
+Version:        0.14.0.1
 Release:        1%{?dist}
 Summary:        Haskell IDE
 
@@ -19,7 +19,7 @@ Source0:        http://hackage.haskell.org/package/%{name}-%{version}/%{name}-%{
 Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
-Patch1:         leksah-0.13.4.3-gtk.patch
+Patch1:         leksah-0.14-gtk.patch
 
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
@@ -53,6 +53,7 @@ BuildRequires:  ghc-parsec-devel
 BuildRequires:  ghc-pretty-devel
 BuildRequires:  ghc-regex-base-devel
 BuildRequires:  ghc-regex-tdfa-devel
+BuildRequires:  ghc-regex-tdfa-text-devel
 BuildRequires:  ghc-shakespeare-devel
 BuildRequires:  ghc-strict-devel
 BuildRequires:  ghc-text-devel
@@ -101,6 +102,7 @@ This package provides the Haskell %{name} library development files.
 %patch1 -p1 -b .orig
 cabal-tweak-flag dyre False
 cabal-tweak-flag gtk3 False
+cabal-tweak-flag network-uri False
 cabal-tweak-flag webkit False
 
 
@@ -188,6 +190,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Tue Sep 16 2014 Jens Petersen <petersen@redhat.com> - 0.14.0.1-1
+- update to 0.14.0.1
+- disable network-uri
+
 * Wed Sep 03 2014 Jens Petersen <petersen@redhat.com> - 0.13.4.3-1
 - update to 0.13.4.3
 - needs new deps: vado, vcsgui, vcswrapper

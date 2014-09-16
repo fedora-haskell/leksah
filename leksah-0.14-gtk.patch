@@ -1,0 +1,15 @@
+--- leksah-0.14.0.1/leksah.cabal~	2014-08-31 01:03:55.000000000 +0900
++++ leksah-0.14.0.1/leksah.cabal	2014-09-16 13:14:51.335772550 +0900
+@@ -312,7 +312,11 @@
+         ghc-options: -threaded
+ 
+     hs-source-dirs: main
+-    build-depends: leksah == 0.14.0.1, base >= 4.0.0.0 && <=4.8, gtk3 -any
++    build-depends: leksah == 0.14.0.1, base >= 4.0.0.0 && <=4.8
++    if flag(gtk3)
++        build-depends: gtk3 >=0.12.4 && <0.13
++    else
++        build-depends: gtk >=0.12.4 && <0.13
+     if os(linux) && flag(loc)
+         cpp-options: -DLOCALIZATION
+         build-depends: hgettext, setlocale
