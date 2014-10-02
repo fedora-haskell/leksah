@@ -9,7 +9,7 @@
 
 Name:           %{pkg_name}
 Version:        0.14.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
@@ -131,21 +131,23 @@ install --mode=0644 -D %{SOURCE3} %{buildroot}/%{_datadir}/mime/packages
 
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+touch --no-create %{_datadir}/mime/packages &> /dev/null || :
 /usr/bin/update-desktop-database &> /dev/null || :
-/usr/bin/update-mime-database %{_datadir}/mime &> /dev/null || :
 
 
 %postun
 if [ $1 -eq 0 ] ; then
     touch --no-create %{_datadir}/icons/hicolor &>/dev/null
     gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    touch --no-create %{_datadir}/mime/packages &> /dev/null || :
+    update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 fi
 /usr/bin/update-desktop-database &> /dev/null || :
-/usr/bin/update-mime-database %{_datadir}/mime &> /dev/null || :
 
 
 %posttrans
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %post -n ghc-%{name}-devel
@@ -190,6 +192,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Thu Oct 02 2014 Rex Dieter <rdieter@fedoraproject.org> 0.14.0.1-2
+- update mime scriptlet
+
 * Tue Sep 16 2014 Jens Petersen <petersen@redhat.com> - 0.14.0.1-1
 - update to 0.14.0.1
 - disable network-uri
