@@ -4,18 +4,15 @@
 
 %bcond_with tests
 
-# no useful debuginfo for Haskell packages without C sources
-%global debug_package %{nil}
-
 Name:           %{pkg_name}
 Version:        0.14.0.1
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Haskell IDE
 
 # LICENSE file is GPLv2 while sources only mention GPL, hence GPL+.
 License:        GPL+
-Url:            http://hackage.haskell.org/package/%{name}
-Source0:        http://hackage.haskell.org/package/%{name}-%{version}/%{name}-%{version}.tar.gz
+Url:            https://hackage.haskell.org/package/%{name}
+Source0:        https://hackage.haskell.org/package/%{name}-%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
@@ -124,9 +121,7 @@ install --mode=0644 -D %{SOURCE3} %{buildroot}/%{_datadir}/mime/packages
 
 
 %check
-%if %{with tests}
-%cabal test
-%endif
+%cabal_test
 
 
 %post
@@ -160,28 +155,13 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 %files
 %doc LICENSE
-%doc Readme
-%attr(755,root,root) %{_bindir}/%{name}
-%dir %{_datadir}/%{name}-%{version}
-%dir %{_datadir}/%{name}-%{version}/data
-%dir %{_datadir}/%{name}-%{version}/data/leksah-welcome
-%dir %{_datadir}/%{name}-%{version}/data/leksah-welcome/src
-%dir %{_datadir}/%{name}-%{version}/pics
-%dir %{_datadir}/%{name}-%{version}/language-specs
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/LICENSE
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/Readme
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/pics/*
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/*.lksh*
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/leksah.menu
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/LICENSE
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/welcome.txt
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/leksah-welcome/*.*
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/data/leksah-welcome/src/Main.hs
-%attr(644,root,root) %{_datadir}/%{name}-%{version}/language-specs/*
-%attr(644,root,root) %{_datadir}/applications/%{name}.desktop
-%attr(644,root,root) %{_datadir}/applications/%{name}_loadsession.desktop
-%attr(644,root,root) %{_datadir}/mime/packages/leksah.xml
-%attr(644,root,root) %{_datadir}/icons/hicolor/128x128/apps/leksah.png
+%doc Readme.md
+%{_bindir}/%{name}
+%{_datadir}/%{name}-%{version}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/%{name}_loadsession.desktop
+%{_datadir}/mime/packages/leksah.xml
+%{_datadir}/icons/hicolor/128x128/apps/leksah.png
 
 
 %files -n ghc-%{name} -f ghc-%{name}.files
@@ -192,12 +172,10 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %changelog
-* Thu Oct 02 2014 Rex Dieter <rdieter@fedoraproject.org> 0.14.0.1-2
-- update mime scriptlet
-
-* Tue Sep 16 2014 Jens Petersen <petersen@redhat.com> - 0.14.0.1-1
+* Fri Feb  6 2015 Jens Petersen <petersen@redhat.com> - 0.14.0.1-1
 - update to 0.14.0.1
 - disable network-uri
+- update mime scriptlet (Rex Dieter)
 
 * Wed Sep 03 2014 Jens Petersen <petersen@redhat.com> - 0.13.4.3-1
 - update to 0.13.4.3
