@@ -2,10 +2,10 @@
 
 %global pkg_name leksah
 
-%bcond_without tests
+%bcond_with tests
 
 Name:           %{pkg_name}
-Version:        0.14.0.1
+Version:        0.14.4.0
 Release:        1%{?dist}
 Summary:        Haskell IDE
 
@@ -51,7 +51,7 @@ BuildRequires:  ghc-parsec-devel
 BuildRequires:  ghc-pretty-devel
 BuildRequires:  ghc-regex-base-devel
 BuildRequires:  ghc-regex-tdfa-devel
-BuildRequires:  ghc-regex-tdfa-text-devel
+#BuildRequires:  ghc-regex-tdfa-text-devel
 BuildRequires:  ghc-setlocale-devel
 BuildRequires:  ghc-shakespeare-devel
 BuildRequires:  ghc-strict-devel
@@ -60,9 +60,9 @@ BuildRequires:  ghc-time-devel
 BuildRequires:  ghc-transformers-devel
 BuildRequires:  ghc-unix-devel
 BuildRequires:  ghc-utf8-string-devel
-BuildRequires:  ghc-vado-devel
-BuildRequires:  ghc-vcsgui-devel
-BuildRequires:  ghc-vcswrapper-devel
+#BuildRequires:  ghc-vado-devel
+#BuildRequires:  ghc-vcsgui-devel
+#BuildRequires:  ghc-vcswrapper-devel
 %if %{with tests}
 BuildRequires:  ghc-monad-loops-devel
 BuildRequires:  ghc-webkit-devel
@@ -103,7 +103,6 @@ cabal-tweak-flag dyre False
 cabal-tweak-flag gtk3 False
 cabal-tweak-flag loc True
 cabal-tweak-flag network-uri False
-cabal-tweak-flag webkit False
 
 
 %build
@@ -175,6 +174,9 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %changelog
+* Tue Mar 03 2015 Jens Petersen <petersen@redhat.com> - 0.14.4.0-1
+- update to 0.14.4.0
+
 * Fri Feb  6 2015 Jens Petersen <petersen@redhat.com> - 0.14.0.1-1
 - update to 0.14.0.1
 - disable network-uri
