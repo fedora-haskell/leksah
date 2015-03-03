@@ -2,7 +2,7 @@
 
 %global pkg_name leksah
 
-%bcond_with tests
+%bcond_without tests
 
 Name:           %{pkg_name}
 Version:        0.14.0.1
@@ -39,6 +39,7 @@ BuildRequires:  ghc-glib-devel
 BuildRequires:  ghc-gtk-devel
 BuildRequires:  ghc-gtksourceview2-devel
 BuildRequires:  ghc-haskell-src-exts-devel
+BuildRequires:  ghc-hgettext-devel
 BuildRequires:  ghc-hlint-devel
 BuildRequires:  ghc-hslogger-devel
 BuildRequires:  ghc-leksah-server-devel
@@ -51,6 +52,7 @@ BuildRequires:  ghc-pretty-devel
 BuildRequires:  ghc-regex-base-devel
 BuildRequires:  ghc-regex-tdfa-devel
 BuildRequires:  ghc-regex-tdfa-text-devel
+BuildRequires:  ghc-setlocale-devel
 BuildRequires:  ghc-shakespeare-devel
 BuildRequires:  ghc-strict-devel
 BuildRequires:  ghc-text-devel
@@ -99,6 +101,7 @@ This package provides the Haskell %{name} library development files.
 %patch1 -p1 -b .orig
 cabal-tweak-flag dyre False
 cabal-tweak-flag gtk3 False
+cabal-tweak-flag loc True
 cabal-tweak-flag network-uri False
 cabal-tweak-flag webkit False
 
@@ -176,6 +179,7 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 - update to 0.14.0.1
 - disable network-uri
 - update mime scriptlet (Rex Dieter)
+- enable localization
 
 * Wed Sep 03 2014 Jens Petersen <petersen@redhat.com> - 0.13.4.3-1
 - update to 0.13.4.3
