@@ -1,5 +1,10 @@
 # https://fedoraproject.org/wiki/Packaging:Haskell
 
+%global ghc_without_dynamic 1
+%global ghc_without_shared 1
+%global without_prof 1
+%global without_haddock 1
+
 %global pkg_name leksah
 
 %bcond_with tests
@@ -16,7 +21,8 @@ Source0:        https://hackage.haskell.org/package/%{name}-%{version}/%{name}-%
 Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
-Patch1:         leksah-0.14-gtk.patch
+#Patch1:         leksah-0.14-gtk.patch
+Patch2:         leksah-0.14-no-hamlet.patch
 
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
@@ -26,6 +32,7 @@ BuildRequires:  ghc-QuickCheck-devel
 BuildRequires:  ghc-array-devel
 BuildRequires:  ghc-binary-devel
 BuildRequires:  ghc-binary-shared-devel
+BuildRequires:  ghc-blaze-html-devel
 BuildRequires:  ghc-bytestring-devel
 BuildRequires:  ghc-conduit-devel
 BuildRequires:  ghc-containers-devel
@@ -34,21 +41,26 @@ BuildRequires:  ghc-directory-devel
 BuildRequires:  ghc-executable-path-devel
 BuildRequires:  ghc-filepath-devel
 BuildRequires:  ghc-ghc-devel
+#BuildRequires:  ghc-ghcjs-codemirror-devel
+#BuildRequires:  ghc-ghcjs-dom-devel
 BuildRequires:  ghc-gio-devel
-BuildRequires:  ghc-glib-devel
-BuildRequires:  ghc-gtk-devel
-BuildRequires:  ghc-gtksourceview2-devel
+#BuildRequires:  ghc-glib-devel
+#BuildRequires:  ghc-gtk3-devel
+#BuildRequires:  ghc-gtksourceview3-devel
 BuildRequires:  ghc-haskell-src-exts-devel
 BuildRequires:  ghc-hgettext-devel
 BuildRequires:  ghc-hlint-devel
 BuildRequires:  ghc-hslogger-devel
+#BuildRequires:  ghc-jsaddle-devel
 BuildRequires:  ghc-leksah-server-devel
-BuildRequires:  ghc-ltk-devel
+#BuildRequires:  ghc-lens-devel
+#BuildRequires:  ghc-ltk-devel
 BuildRequires:  ghc-mtl-devel
 BuildRequires:  ghc-network-devel
 BuildRequires:  ghc-old-time-devel
 BuildRequires:  ghc-parsec-devel
 BuildRequires:  ghc-pretty-devel
+#BuildRequires:  ghc-pretty-show-devel
 BuildRequires:  ghc-regex-base-devel
 BuildRequires:  ghc-regex-tdfa-devel
 #BuildRequires:  ghc-regex-tdfa-text-devel
@@ -63,54 +75,53 @@ BuildRequires:  ghc-utf8-string-devel
 #BuildRequires:  ghc-vado-devel
 #BuildRequires:  ghc-vcsgui-devel
 #BuildRequires:  ghc-vcswrapper-devel
+#BuildRequires:  ghc-webkitgtk3-devel
+#BuildRequires:  ghc-webkit-javascriptcore-devel
 %if %{with tests}
 BuildRequires:  ghc-monad-loops-devel
-BuildRequires:  ghc-webkit-devel
 %endif
 # End cabal-rpm deps
 BuildRequires:  desktop-file-utils
 Requires:       hicolor-icon-theme
 Requires:       leksah-server
+BuildRequires:  cabal-install > 1.18
+# for pretty-show
+BuildRequires:  happy
+BuildRequires:  gtk2hs-buildtools
+BuildRequires:  pkgconfig(webkitgtk-3.0)
+BuildRequires:  pkgconfig(gtksourceview-3.0)
 
 %description
 Leksah is an Integrated Development Environment for
 Haskell written in Haskell and using the GTK+ GUI Toolkit.
 
 
-%package -n ghc-%{name}
-Summary:        Haskell %{name} library
-
-%description -n ghc-%{name}
-This package provides the Haskell %{name} shared library.
-
-
-%package -n ghc-%{name}-devel
-Summary:        Haskell %{name} library development files
-Provides:       ghc-%{name}-static = %{version}-%{release}
-Requires:       ghc-compiler = %{ghc_version}
-Requires(post): ghc-compiler = %{ghc_version}
-Requires(postun): ghc-compiler = %{ghc_version}
-Requires:       ghc-%{name}%{?_isa} = %{version}-%{release}
-
-%description -n ghc-%{name}-devel
-This package provides the Haskell %{name} library development files.
-
 
 %prep
 %setup -q
-%patch1 -p1 -b .orig
+%patch2 -p1 -b .orig
 cabal-tweak-flag dyre False
-cabal-tweak-flag gtk3 False
+#cabal-tweak-flag gtk3 False
 cabal-tweak-flag loc True
 cabal-tweak-flag network-uri False
 
 
 %build
-%ghc_lib_build
+%global cabal cabal
+[ -d "$HOME/.cabal" ] || %cabal update
+%cabal sandbox init
+# for haddock-library hGetContents
+export LANG=en_US.utf8
+# for gcc 5
+cat > cabal.config << EOF
+constraints: webkitgtk3 >= 0.13.1.3
+EOF
+%cabal install --only-dependencies --force-reinstalls
+%ghc_bin_build
 
 
 %install
-%ghc_lib_install
+%ghc_bin_install
 mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/128x128/apps
 install --mode=0644 -D pics/leksah.png %{buildroot}/%{_datadir}/icons/hicolor/128x128/apps/leksah.png
 desktop-file-install --add-category="Development"  --add-category="X-DevelopmentTools" --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
@@ -119,11 +130,13 @@ desktop-file-install --add-category="Development"  --add-category="X-Development
 mkdir -p %{buildroot}/%{_datadir}/mime/packages
 install --mode=0644 -D %{SOURCE3} %{buildroot}/%{_datadir}/mime/packages
 
-%ghc_fix_dynamic_rpath %{name}
+rm -rf %{buildroot}%ghclibdir
 
 
 %check
-%cabal_test
+%if %{with tests}
+%cabal test
+%endif
 
 
 %post
@@ -147,17 +160,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
-%post -n ghc-%{name}-devel
-%ghc_pkg_recache
-
-
-%postun -n ghc-%{name}-devel
-%ghc_pkg_recache
-
 
 %files
 %doc LICENSE
-%doc Readme.md
+%doc Readme.md doc
+%{_bindir}/bewleksah
 %{_bindir}/%{name}
 %{_datadir}/%{name}-%{version}
 %{_datadir}/applications/%{name}.desktop
@@ -166,22 +173,18 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_datadir}/icons/hicolor/128x128/apps/leksah.png
 
 
-%files -n ghc-%{name} -f ghc-%{name}.files
-%doc LICENSE
-
-
-%files -n ghc-%{name}-devel -f ghc-%{name}-devel.files
-
-
 %changelog
 * Tue Mar 03 2015 Jens Petersen <petersen@redhat.com> - 0.14.4.0-1
 - update to 0.14.4.0
+- patch out hamlet
+- build with cabal-install
 
-* Fri Feb  6 2015 Jens Petersen <petersen@redhat.com> - 0.14.0.1-1
+* Thu Oct 02 2014 Rex Dieter <rdieter@fedoraproject.org> 0.14.0.1-2
+- update mime scriptlet
+
+* Tue Sep 16 2014 Jens Petersen <petersen@redhat.com> - 0.14.0.1-1
 - update to 0.14.0.1
 - disable network-uri
-- update mime scriptlet (Rex Dieter)
-- enable localization
 
 * Wed Sep 03 2014 Jens Petersen <petersen@redhat.com> - 0.13.4.3-1
 - update to 0.13.4.3
