@@ -1,16 +1,10 @@
-# https://fedoraproject.org/wiki/Packaging:Haskell
-
-%global ghc_without_dynamic 1
-%global ghc_without_shared 1
-%global without_prof 1
-%global without_haddock 1
-
-%global pkg_name leksah
-
 %bcond_with tests
 
-Name:           %{pkg_name}
-Version:        0.14.4.0
+# nothing to see here
+%global debug_package %{nil}
+
+Name:           leksah
+Version:        0.15.1.1
 Release:        1%{?dist}
 Summary:        Haskell IDE
 
@@ -21,13 +15,12 @@ Source0:        https://hackage.haskell.org/package/%{name}-%{version}/%{name}-%
 Source1:        %{name}.desktop
 Source2:        %{name}_loadsession.desktop
 Source3:        %{name}.xml
-#Patch1:         leksah-0.14-gtk.patch
-Patch2:         leksah-0.14-no-hamlet.patch
+Patch0:         leksah-0.15.1.1-no-bewleksah.patch
 
 BuildRequires:  ghc-Cabal-devel
 BuildRequires:  ghc-rpm-macros
 # Begin cabal-rpm deps:
-BuildRequires:  chrpath
+#BuildRequires:  chrpath
 BuildRequires:  ghc-QuickCheck-devel
 BuildRequires:  ghc-array-devel
 BuildRequires:  ghc-binary-devel
@@ -88,6 +81,7 @@ BuildRequires:  cabal-install > 1.18
 # for pretty-show
 BuildRequires:  happy
 BuildRequires:  gtk2hs-buildtools
+BuildRequires:  pkgconfig(webkit-1.0)
 BuildRequires:  pkgconfig(webkitgtk-3.0)
 BuildRequires:  pkgconfig(gtksourceview-3.0)
 
@@ -99,29 +93,23 @@ Haskell written in Haskell and using the GTK+ GUI Toolkit.
 
 %prep
 %setup -q
-%patch2 -p1 -b .orig
-cabal-tweak-flag dyre False
-#cabal-tweak-flag gtk3 False
-cabal-tweak-flag loc True
-cabal-tweak-flag network-uri False
+%patch0 -p1 -b .orig
+#cabal-tweak-flag loc True
 
 
 %build
 %global cabal cabal
 [ -d "$HOME/.cabal" ] || %cabal update
 %cabal sandbox init
-# for haddock-library hGetContents
-export LANG=en_US.utf8
-# for gcc 5
-cat > cabal.config << EOF
-constraints: webkitgtk3 >= 0.13.1.3
-EOF
-%cabal install --only-dependencies --force-reinstalls
-%ghc_bin_build
+%cabal install --force-reinstalls
 
 
 %install
-%ghc_bin_install
+mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/%{name}-%{version}
+install -p .cabal-sandbox/bin/%{name} %{buildroot}%{_bindir}
+
+cp -pr .cabal-sandbox/share/%{name}-%{version} %{buildroot}%{_datadir}/
+
 mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/128x128/apps
 install --mode=0644 -D pics/leksah.png %{buildroot}/%{_datadir}/icons/hicolor/128x128/apps/leksah.png
 desktop-file-install --add-category="Development"  --add-category="X-DevelopmentTools" --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
@@ -129,8 +117,6 @@ desktop-file-install --add-category="Development"  --add-category="X-Development
 # Copy mime file
 mkdir -p %{buildroot}/%{_datadir}/mime/packages
 install --mode=0644 -D %{SOURCE3} %{buildroot}/%{_datadir}/mime/packages
-
-rm -rf %{buildroot}%ghclibdir
 
 
 %check
@@ -164,7 +150,7 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %files
 %doc LICENSE
 %doc Readme.md doc
-%{_bindir}/bewleksah
+#%{_bindir}/bewleksah
 %{_bindir}/%{name}
 %{_datadir}/%{name}-%{version}
 %{_datadir}/applications/%{name}.desktop
@@ -174,6 +160,10 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %changelog
+* Mon Aug 10 2015 Jens Petersen <petersen@redhat.com> - 0.15.1.1-1
+- build with cabal-install sandbox
+- disable bewleksah (#152) and loc (#150)
+
 * Tue Mar 03 2015 Jens Petersen <petersen@redhat.com> - 0.14.4.0-1
 - update to 0.14.4.0
 - patch out hamlet
